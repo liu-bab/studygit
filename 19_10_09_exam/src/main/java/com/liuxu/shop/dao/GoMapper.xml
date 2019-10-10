@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liuxu.shop.dao.GoMapper">
+	<resultMap type="com.liuxu.shop.domain.Goods" id="goods">
+		<id column="gid" property="gid"/>
+		<result column="name" property="name"/>
+		<result column="ename" property="ename"/>
+		<result column="size" property="size"/>
+		<result column="price" property="price"/>
+		<result column="biao" property="biao"/>
+		
+		<association property="brand" javaType="com.liuxu.shop.domain.Brand">
+			<id column="bid" property="bid"/>
+			<result column="bname" property="bname"/>			
+		</association>
+		
+		<association property="goodskind" javaType="com.liuxu.shop.domain.Goodskind">
+			<id column="zid" property="zname"/>
+			<result column="zname" property="zname"/>
+		</association>
+		 
+	</resultMap>
+
+	<select id="getList" resultMap="goods">
+		SELECT g.*,b.bname,k.zname FROM tb_goods g LEFT JOIN tb_brand b ON g.bid=b.bid LEFT JOIN tb_goodskind k ON g.zid=k.zid 
+		<where>
+			<if test="name != null and name != ''">
+				 and name like "%#{name}%"
+			</if>
+		</where>
+	</select>
+	
+	<select id="getBrand" resultType="com.liuxu.shop.domain.Brand">
+		select * from tb_brand 
+	</select>
+	
+	<select id="getGoodskin" resultType="com.liuxu.shop.domain.Goodskind">
+		select * from tb_goodskind
+	</select>
+	
+	<insert id="addGoods">
+		insert into tb_goods set name=#{name},ename=#{ename},size=${size},price=${price},biao=#{biao},bid=${bid},zid=${zid}
+	</insert>
+	
+	<select id="getGoodsByid" resultMap="goods">
+		select * from goods where gid = #{gid}
+	</select>
+	
+	<update id="updGoods">
+		update goods set name=#{name},ename=#{ename},size=#{size},price=#{price},biao=#{biao},bid=#{bid},zid=#{zid} where gid = #{gid}
+	</update>
+	
+	<delete id="delsGoods" >
+		delete from goods where gid in ("#{id}")
+	</delete>
+</mapper>
